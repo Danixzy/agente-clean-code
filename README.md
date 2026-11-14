@@ -4,8 +4,7 @@ Subagente do [Claude Code](https://docs.anthropic.com/en/docs/claude-code/sub-ag
 código e devolve um relatório com **nota de 0 a 10**, **achados priorizados** (arquivo:linha, regra violada, por que
 importa e como corrigir, com antes e depois) e o **resultado real dos linters, type checkers e testes** do projeto.
 
-Projeto acadêmico da equipe do [CromoCard](https://github.com/codaqui/cromocard-workspace), curso de Engenharia de
-Software da UniCesumar. O documento completo do trabalho está em [`docs/Agente-Clean-Code.pdf`](docs/Agente-Clean-Code.pdf).
+Trabalho acadêmico do curso de Engenharia de Software da UniCesumar. O documento completo do trabalho está em [`docs/Agente-Clean-Code.pdf`](docs/Agente-Clean-Code.pdf).
 
 ## O que ele verifica
 
@@ -15,7 +14,7 @@ Software da UniCesumar. O documento completo do trabalho está em [`docs/Agente-
 | SOLID e Clean Architecture | Martin (2017) |
 | Object Calisthenics | Jeff Bay (2008) |
 | DRY, KISS, YAGNI, Lei de Demeter, composição, imutabilidade | Hunt e Thomas; princípios gerais |
-| 19 code smells com a refatoração indicada | Fowler, *Refatoração* (2020) |
+| 19 code smells selecionados, com a refatoração indicada | Fowler, *Refatoração* (1ª e 2ª ed.) |
 | Design Patterns (uso real e padrão forçado) | Gamma et al. (GoF) |
 | Segurança | OWASP Top 10 |
 | Testes | F.I.R.S.T., AAA, cobertura |
@@ -80,16 +79,19 @@ O agente rodou nos três casos sem ler os arquivos `esperado.md`. Relatórios co
 - **Nenhum falso positivo** na conferência.
 - **Além do gabarito**, o agente reproduziu um bug real no caso 02: um valor `'100'` em string gera **9860** em vez de
   110 por coerção de tipos.
-- **Onde errou:** no caso 02 não marcou nada como Crítico, e a nota ficou em 5,7, acima do limite de 5 previsto.
+- **Onde errou:** classifica a gravidade para baixo. No caso 02 não marcou nada como Crítico (nota 5,7, acima do limite
+  de 5 previsto) e, no código real, deu Médio a um bug (M2) que pela própria tabela de severidade seria Crítico.
+- **Precisão 100%** (nenhum falso positivo) e **revocação 94%** (16 de 17). Execução de 13/11/2026 com o Claude Code
+  2.1.323 e o Claude Opus 5.5; o registro da execução confirma que o agente não abriu os `esperado.md`.
 
-### Código real: domínio de autenticação do CromoCard
+### Código real: módulo de autenticação de uma API
 
-Relatório completo em [`exemplos/relatorio-cromocard-auth.md`](exemplos/relatorio-cromocard-auth.md).
+Relatório completo em [`exemplos/relatorio-modulo-auth.md`](exemplos/relatorio-modulo-auth.md).
 
 - 9 arquivos e 1.829 linhas, em cerca de 5 minutos.
 - O agente rodou ESLint, Prettier, `tsc` e Vitest (54 testes) e mediu a cobertura (99,1% das linhas do service).
 - **Nota 8,5/10**, com 3 achados médios e 8 baixos.
-- Os 3 médios foram conferidos à mão e procedem. O principal: a renovação do refresh token revoga o token antigo e
+- Os 3 médios foram conferidos à mão e procedem (os 8 baixos foram lidos, mas não conferidos um a um). O principal: a renovação do refresh token revoga o token antigo e
   cria o novo fora de uma transação, o que pode derrubar todas as sessões do usuário numa falha do banco.
 
 

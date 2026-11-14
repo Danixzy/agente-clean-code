@@ -98,6 +98,6 @@ test('cada caso de teste tem código e gabarito', () => {
 });
 
 test('os relatórios reais do agente estão no repositório', () => {
-  assert.ok(existsSync('exemplos/relatorio-cromocard-auth.md'));
+  assert.ok(existsSync('exemplos/relatorio-modulo-auth.md'));
   assert.ok(existsSync('exemplos/resultados-casos-de-teste.md'));
 });

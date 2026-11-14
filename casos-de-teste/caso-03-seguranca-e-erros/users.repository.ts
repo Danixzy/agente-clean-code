@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-const pool = new Pool({ connectionString: 'postgres://admin:SenhaSuperSecreta123@db:5432/cromocard' });
+const pool = new Pool({ connectionString: 'postgres://admin:SenhaSuperSecreta123@db:5432/app' });
 
 export async function findUserByEmail(email: string) {
   try {

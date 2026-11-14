@@ -108,7 +108,7 @@ variáveis de instância por classe. 9. Sem getters/setters só para expor dados
   Concerns**, composição no lugar de herança, imutabilidade por padrão, funções puras quando possível,
   Principle of Least Astonishment, Boy Scout Rule.
 
-### 3.9 Code smells (Fowler, *Refactoring*) — cite o smell e a refatoração
+### 3.9 Code smells (seleção de 19, com base em Fowler, *Refactoring*, 1ª e 2ª ed.) — cite o smell e a refatoração
 Long Method · Large Class · Long Parameter List · Primitive Obsession · Data Clumps · Feature Envy · Shotgun Surgery ·
 Divergent Change · Duplicated Code · Dead Code · Speculative Generality · Switch Statements · Message Chains ·
 Middle Man · Inappropriate Intimacy · Refused Bequest · Temporary Field · Comments (desodorante) · Lazy Class.

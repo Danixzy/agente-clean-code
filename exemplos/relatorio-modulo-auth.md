@@ -1,10 +1,11 @@
-# Relatório de Clean Code: `apps/cromocard-backend/src/domains/auth`
+# Relatório de Clean Code: `src/domains/auth`
 
-> Relatório gerado pelo agente `clean-code` em 13/11/2026, no domínio de autenticação do backend do
-> [CromoCard](https://github.com/codaqui/cromocard-backend), na branch `develop`. Reproduzido sem edição de conteúdo.
+> Relatório gerado pelo agente `clean-code` em 13/11/2026 (Claude Code 2.1.323, Claude Opus 5.5), no módulo de
+> autenticação de uma API real em Node.js/TypeScript, na branch `develop`. Reproduzido sem edição de conteúdo, exceto
+> pela remoção do nome do projeto nos caminhos.
 > Os três achados médios (M1, M2 e M3) foram conferidos à mão no código e procedem.
 
-**Nota: 8,5/10 (Bom)** · Escopo: os 9 arquivos de `src/domains/auth/` na branch `develop` do submódulo, 1.829 linhas (603 de código de produção + 130 de Swagger + 826 de teste). O `.gitkeep` vazio ficou de fora. · Stack: Node 24, TypeScript strict, Express 5, Prisma/PostgreSQL, Zod 4 e Vitest.
+**Nota: 8,5/10 (Bom)** · Escopo: os 9 arquivos de `src/domains/auth/` na branch `develop` do submódulo, 1.829 linhas (873 de código de produção + 130 de Swagger + 826 de teste). O `.gitkeep` vazio ficou de fora. · Stack: Node 24, TypeScript strict, Express 5, Prisma/PostgreSQL, Zod 4 e Vitest.
 
 ## Resumo
 O domínio está bem feito. Lint, tipos, formatação e os 54 testes unitários passam, a `AuthService` tem 99% das linhas cobertas e não há falha de segurança concreta. O que mais pesa:
@@ -30,7 +31,7 @@ Pontos fortes: dependências injetadas por portas (DIP), defesa contra enumeraç
 ## Achados
 
 ### 🟡 M1: `AuthService` com vários motivos para mudar
-- **Onde:** `apps/cromocard-backend/src/domains/auth/auth.service.ts:1-406` (classe em 152-406)
+- **Onde:** `src/domains/auth/auth.service.ts:1-406` (classe em 152-406)
 - **Regra:** SRP (SOLID) · Clean Code cap. 10 (classes pequenas) · Smells: Large Class, Divergent Change · Object Calisthenics 7 (entidades pequenas)
 - **Problema:** uma só classe cuida de quatro fluxos independentes. São eles: sessão (`login`, `loginWithGoogle`, `refresh`, `logout`, `startSession`), cadastro e confirmação (`register`, `verifyEmail`, `resendVerification`), recuperação de senha (`forgotPassword`, `resetPassword`, `issuePasswordReset`) e limpeza (`deleteExpiredTokens`). O arquivo tem 406 linhas, acima do alerta de ~300, e o `AuthServiceDeps` tem 8 dependências, das quais cada fluxo usa só uma parte.
 - **Por que importa:** qualquer mudança no e-mail de confirmação, na política de sessão ou no reset de senha mexe no mesmo arquivo e no mesmo spec de 770 linhas. Com as próximas features (troca de senha no perfil, reativação de conta), o arquivo continua crescendo.
@@ -64,7 +65,7 @@ Pontos fortes: dependências injetadas por portas (DIP), defesa contra enumeraç
   O `startSession` passaria a ter 4 parâmetros. Para respeitar `max-params` 3, junte `refreshExpiresAt` e `context` num objeto (Introduce Parameter Object).
 
 ### 🟡 M3: confirmação de e-mail implícita (efeito colateral escondido e estado montado à mão)
-- **Onde:** `auth.service.ts:74` e `:281` (`users.changePassword`), que dependem de `apps/cromocard-backend/src/domains/users/users.repository.ts:242`; `auth.service.ts:367`
+- **Onde:** `auth.service.ts:74` e `:281` (`users.changePassword`), que dependem de `src/domains/users/users.repository.ts:242`; `auth.service.ts:367`
 - **Regra:** Clean Code cap. 3 ("Have No Side Effects") · Principle of Least Astonishment · Smell: Comments as deodorant (aqui o nome do teste explica o que o código não diz)
 - **Problema:**
   - `changePassword` também grava `emailVerified: true` (`data: { passwordHash, emailVerified: true }`). A porta `AuthUsers.changePassword` não deixa isso visível. A regra de negócio "redefinir a senha pelo link confirma o e-mail" fica dentro do repository de outro domínio, e só o nome do teste ("CA5: … confirma o e-mail") a revela.
